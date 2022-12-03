@@ -22,62 +22,80 @@ class GildedRose {
      */
     public void updateQuality() {
         for (Item item : items) {
-            int qualityDecreaseRate = 1;
-            int qualityMinimum = 1;
-
-            if (item.name.equals("Conjured")) {
-                qualityDecreaseRate *= 2;
+            if (item.name.equals("Sulfuras, Hand of Ragnaros")) {
+                continue;
             }
+            updateSellIn(item);
+            updateQuality(item);
+        }
+    }
 
-            if (!item.name.equals("Aged Brie")
-                    && !item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+    private static void updateSellIn(Item item) {
+        item.sellIn = item.sellIn - 1;
+    }
 
-                if (item.quality >= qualityMinimum) {
-                    if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                        item.quality = Math.max(0, item.quality - qualityDecreaseRate);
-                    }
+    private static void updateQuality(Item item) {
+        updateQualityAccordingToCurrentQuality(item);
+        updateQualityIfSellInPassed(item);
+    }
+
+    private static void updateQualityAccordingToCurrentQuality(Item item) {
+        if (!item.name.equals("Aged Brie")
+                && !item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+
+            setQualityForDefaultItems(item);
+        } else if (item.quality < 50) {
+            item.quality = item.quality + 1;
+
+            setQualityForBackstage(item);
+        }
+    }
+
+    private static void updateQualityIfSellInPassed(Item item) {
+        if (item.sellIn < 0) {
+            if (!item.name.equals("Aged Brie")) {
+                if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+                    item.quality = 0;
+                } else {
+                    setQualityForDefaultItems(item);
                 }
-            } else {
+            } else if (item.quality < 50) {
+                    item.quality = item.quality + 1;
+                }
+            }
+    }
+
+    private static void setQualityForDefaultItems(Item item) {
+        if (item.quality >= calcQualityMinimum()) {
+            item.quality = Math.max(0, item.quality - calcQualityDecreaseRate(item.name));
+        }
+    }
+
+    private static void setQualityForBackstage(Item item) {
+        if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
+            if (item.sellIn < 11) {
                 if (item.quality < 50) {
                     item.quality = item.quality + 1;
-
-                    if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (item.sellIn < 11) {
-                            if (item.quality < 50) {
-                                item.quality = item.quality + 1;
-                            }
-                        }
-
-                        if (item.sellIn < 6) {
-                            if (item.quality < 50) {
-                                item.quality = item.quality + 1;
-                            }
-                        }
-                    }
                 }
             }
 
-            if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                item.sellIn = item.sellIn - 1;
-            }
-
-            if (item.sellIn < 0) {
-                if (!item.name.equals("Aged Brie")) {
-                    if (!item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (item.quality >= qualityMinimum) {
-                            if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                                item.quality = Math.max(0, item.quality - qualityDecreaseRate);
-                            }
-                        }
-                    } else {
-                        item.quality = 0;
-                    }
-                } else {
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1;
-                    }
+            if (item.sellIn < 6) {
+                if (item.quality < 50) {
+                    item.quality = item.quality + 1;
                 }
             }
         }
+    }
+
+    private static int calcQualityMinimum() {
+        return 1;
+    }
+
+    private static int calcQualityDecreaseRate(String name) {
+        int qualityDecreaseRate = 1;
+        if (name.equals("Conjured")) {
+            qualityDecreaseRate *= 2;
+        }
+        return qualityDecreaseRate;
     }
 }

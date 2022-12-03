@@ -67,6 +67,64 @@ class GildedRoseTest {
     }
 
     @Test
+    void testDecreaseQualityByOneWhereQualityGreaterThanZero_Conjured() {
+        Item[] items = new Item[] {
+                new Item("Conjured", 1, 0),
+                new Item("Conjured", 1, 1),
+                new Item("Conjured", 1, 2),
+                new Item("Conjured", 1, 3),
+                new Item("Conjured", 1, 4),
+                new Item("Conjured", 1, 5)
+        };
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals(0, app.items[0].quality);
+        assertEquals(0, app.items[0].sellIn);
+        assertEquals(0, app.items[1].quality);
+        assertEquals(0, app.items[1].sellIn);
+        assertEquals(0, app.items[2].quality);
+        assertEquals(0, app.items[2].sellIn);
+        assertEquals(1, app.items[3].quality);
+        assertEquals(0, app.items[3].sellIn);
+        assertEquals(2, app.items[4].quality);
+        assertEquals(0, app.items[4].sellIn);
+        assertEquals(3, app.items[5].quality);
+        assertEquals(0, app.items[5].sellIn);
+    }
+
+    @Test
+    void testSellInPassedDecreaseQualityByTwoWhereQualityGreaterThanZero_Conjured() {
+        Item[] items = new Item[] {
+                new Item("Conjured", 0, 0),
+                new Item("Conjured", 0, 1),
+                new Item("Conjured", 0, 2),
+                new Item("Conjured", 0, 3),
+                new Item("Conjured", 0, 4),
+                new Item("Conjured", 0, 5),
+                new Item("Conjured", 0, 6),
+                new Item("Conjured", 0, 7)
+        };
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals(0, app.items[0].quality);
+        assertEquals(-1, app.items[0].sellIn);
+        assertEquals(0, app.items[1].quality);
+        assertEquals(-1, app.items[1].sellIn);
+        assertEquals(0, app.items[2].quality);
+        assertEquals(-1, app.items[2].sellIn);
+        assertEquals(0, app.items[3].quality);
+        assertEquals(-1, app.items[3].sellIn);
+        assertEquals(0, app.items[4].quality);
+        assertEquals(-1, app.items[4].sellIn);
+        assertEquals(1, app.items[5].quality);
+        assertEquals(-1, app.items[5].sellIn);
+        assertEquals(2, app.items[6].quality);
+        assertEquals(-1, app.items[6].sellIn);
+        assertEquals(3, app.items[7].quality);
+        assertEquals(-1, app.items[7].sellIn);
+    }
+
+    @Test
     void testIncreaseQualityByOneWhereQualityLessThanFifty_AgedBrie() {
         Item[] items = new Item[] {
                 new Item("Aged Brie", 1, 45),
